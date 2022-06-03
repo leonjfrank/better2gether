@@ -5,6 +5,11 @@ import { make_id } from "../utils";
 import logo from "../img/logo.png";
 import logobanner from "../img/logo_banner.png";
 
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
+import particleconfig from "./ts-particles.json";
+
+
 const Wrapper = styled.div`
     width: 100vw;
     height: 100vh;
@@ -19,12 +24,14 @@ const LogoWrapper = styled.div`
     top: 50%;
     left: 50%;
 
-    transform: translate(-50%, -130%);
+    transform: translate(-50%, -140%);
     
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+
+    color: white;
 `
 
 const Logo = styled.div`
@@ -34,6 +41,7 @@ const Logo = styled.div`
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    
     
 `
 const LogoBanner = styled.div`
@@ -45,6 +53,10 @@ const LogoBanner = styled.div`
     background-position: center;
     
 
+`
+
+const Desc = styled.span`
+    height: 20%;
 `
 
 const RoomGenerator = styled.div`
@@ -68,6 +80,7 @@ const RoomGenerator = styled.div`
 
 const RoomGeneratorTitle = styled.span`
     font-size: 1.3rem;
+    font-weight: 650;
     
 `
 
@@ -87,13 +100,18 @@ const RoomGeneratorLink = styled.div`
 const IdText = styled.span`
     height: 3vh;
     width: 75%;
+    color: white;
 `
 
 const Button = styled.button`
     height: 3vh;
-    width: 25%;
+    width: 30%;
 
     border: 0;
+
+    & hover: {
+        background-color: green;
+    }
 
 
 `
@@ -101,29 +119,49 @@ const Button = styled.button`
 
 class Landing extends React.Component {
     
-    
-    get_room() {
-    
-        const id = make_id(12);
-        console.log({id})
-        alert("Room Session ID is: " + id);
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            sessionId: make_id(12),
+        };
     }
-        
-        
+    
+    
+    
+    
     render() {
+        const particlesInit = async (main) => {
+        
+            // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
+            // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+            // starting from v2 you can add only the features you need reducing the bundle size
+            await loadFull(main);
+          };
+        
+          const particlesLoaded = (container) => {
+          };
+        
         return (
             <Wrapper>
+                <Particles
+                    id="tsparticles"
+                    init={particlesInit}
+                    loaded={particlesLoaded}
+                    options={particleconfig}
+
+                    />
                 <LogoWrapper>
                     <Logo />
                     <LogoBanner />
+                    <Desc>A decentralized application to watch videos with others with millisecond delay</Desc>
                 </LogoWrapper>
                 <RoomGenerator>
                     <RoomGeneratorTitle>Generate Room Link</RoomGeneratorTitle>
                     <RoomGeneratorLink>
-                        <IdText>{this.get_room.id}</IdText>
-                        <Button onClick={this.get_room}>Get Room</Button>
+                        <IdText>{this.state.sessionId}</IdText>
+                        <Button onClick={this.copy_room_link}>Copy & Enter</Button>
                     </RoomGeneratorLink>
-
                 </RoomGenerator>
             </Wrapper>
         )
